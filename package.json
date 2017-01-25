@@ -1,0 +1,17 @@
+{
+  "name": "tictoc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "TicToc.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "gen-doc": "jsdoc2md --files TicToc.js > doc/tictoc.md"
+  },
+  "author": "Cristian Baldi",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "jsdoc-to-markdown": "^2.0.1"
+  }
+}

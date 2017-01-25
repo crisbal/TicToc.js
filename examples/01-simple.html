@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Simple - TicToc.js examples</title>
+</head>
+<body>
+	<button class="toggle">Start/Stop</button>
+	<br>
+	<b class="status">Stopped (press the button to start)</b>
+	<br>
+	<br>
+	<pre class="log">Log</pre>
+
+	<script src="../TicToc.js"></script>
+	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+	<script>
+		timer = new TicToc.TicToc();
+
+		timer.after(0, function() {
+			$(".log").append("<br>Timer started with tickrate of " + timer.getTickrate() + "ms");
+		});
+		timer.after(500, function(){
+			$(".log").append("<br>This is executed after 0.5 seconds");
+		});
+		timer.after(1000, function(){
+			$(".log").append("<br>This is executed after 1 second");
+		});
+		timer.after(1500, function(){
+			$(".log").append("<br>This is executed after 1.5 seconds");
+		});
+		timer.after(1750, function(){
+			$(".log").append("<br>This is executed after 1.75 seconds. The timer will self-stop for demonstration purposes. Press the button to continue.");
+			$(".toggle").click();
+		});
+		timer.after(2000, function(){
+			$(".log").append("<br>This is executed after 1.8 seconds");
+		});
+		timer.after(3000, function(){
+			$(".log").append("<br>This is executed after 3 seconds");
+		});
+
+		$(".toggle").click(function(){
+			var status = timer.toggle(); // true if now running
+			if (status) {
+				$(".status").text("Running... (press button to pause)");
+			} else {
+				$(".log").append("<br>Stopped timer with elapsed time: " + timer.getElapsedTime() + "ms");
+				$(".status").text("Stopped (press button to resume)");
+			}
+		})
+	</script>
+</body>
+</html>
