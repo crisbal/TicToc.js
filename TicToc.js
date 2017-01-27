@@ -11,11 +11,38 @@
 	var TicToc = function(options){
 		this.options = options || {};
 
-		this.running = false;
+		this.running = false; // is the timer running?
 
 		this.events = []; // events will be ordered in descending order
+		/* Why sort the array? 
+		We sort the array because this way we avoid looping all the array every time inside `tick()`.
+		And since we `tick()` very very often we want to avoid wasting CPU. Does it really matter? Not if you have 5 events to check, probably it does if you 50000 of them.
+		Other solutions could be implemented, such as having a variable that keeps track of the earliest event.
+		I think this solution looks cleaner, even if we have some additional conditions to keep track of (see below). 
+		*/
 
-		this.elapsedTime = 0;
+		this.elapsedTime = 0; // how many ms have passed since `start()`
+
+		this.ticking = false; // this variable will indicate  if we are curently in the tick() function
+		this.redoSort = false; // this variable will indicate if, at the end of tick() we need to re-sort the array of events
+		/* Why do `ticking` and `redoSort` exist?
+		   Consider the case of this code:
+		   ```
+		   timer.after(1500, function() {
+		   	timer.after(2000, function() {
+			 console.log("This is executed after 2000");
+			});
+		   });
+		   ```
+		   When firing the 1500ms event we add another event to our `events` array.
+		   Adding an event also requires the array to be sorted (see consideration about sorting above). 
+		   If we are in the middle of the looping, suppose at index `i`, we execute `events[i].callback()`, 
+		   the callback adds an event and that event is placed at index `i` after the sorting. 
+		   Since we remove the event after firing the callback we would remove the `i`th event:
+		   here is the problem: we would remove the newly added event and not the one that was executed. 	     
+		   With these two variables we enable the sorting of the array only if we are not ticking.
+		*/
+
 	};
 
 	/**
@@ -41,10 +68,12 @@
 			this.running = false;
 
 			clearInterval(this.ticker);
-			this.tick();
+			
+			if(!this.ticking) // don't `tick()` if we are alreay ticking: avoid problems when a callback calls stop();
+				this.tick();
 		}
 	}
-
+1
 	/**
 	 * {@link TicToc#start Start} or {@link TicToc#stop stop} the timer.
 	 * @returns {Boolean} the state of the timer after starting/stopping (`true` if running, `false` otherwise)
@@ -80,7 +109,8 @@
 				break; //since they are ordered in descending order we can break without missing anything
 			}
 		}
-		if(this.redoSort){
+
+		if (this.redoSort) { // an event was added in a callback
 			this.events.sort(function(e1, e2) { // this comparator will sort in descending order, latest event first
 				if(e1.delay < e2.delay)
 					return 1;
@@ -104,7 +134,7 @@
 			"callback": callback
 		});
 
-		if (!this.ticking){
+		if (!this.ticking) {
 			this.events.sort(function(e1, e2) { // this comparator will sort in descending order, latest event first
 				if(e1.delay < e2.delay)
 					return 1;
