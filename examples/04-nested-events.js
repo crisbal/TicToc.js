@@ -5,10 +5,10 @@ timer.after(0, function() {
 	console.log("Timer started!");
 });
 timer.after(1500, function() {
-	timer.after(2000, function() {
-		console.log("This is executed after 2000");
+	timer.afterFromNow(500, function() {
+		console.log("This is executed after 2000ms");
 	});
-	console.log("This is executed after 1.5 seconds");
+	console.log("This is executed after 1500 seconds");
 });
 timer.after(3000, function() {
 	timer.stop();
