@@ -7,7 +7,7 @@
     "example": "examples"
   },
   "scripts": {
-    "gen-doc": "jsdoc2md --files TicToc.js > doc/tictoc.md"
+    "gen-doc": "jsdoc2md --files TicToc.js > docs/tictoc.md"
   },
   "author": "Cristian Baldi",
   "license": "GPL-3.0",

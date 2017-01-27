@@ -193,4 +193,4 @@
 
 	exports.TicToc = TicToc;
 
-})(typeof exports === 'undefined'? this['TicToc']={}: exports);
+})(typeof exports === 'undefined'? this['TicToc']={}: exports); // this is to allow support of both the browser and node.js
